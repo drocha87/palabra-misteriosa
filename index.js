@@ -94,8 +94,8 @@ const misterious_words = [
 const alphabet = [
 	'a', 'á', 'b', 'c', 'd', 'e', 'é', 'f', 'g', 'h',
 	'i', 'í', 'j', 'k', 'l', 'm', 'n', 'ñ', 'o', 'ó',
-	'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y',
-	'z'
+	'p', 'q', 'r', 's', 't', 'u', 'ú', 'v', 'w', 'x',
+	'y', 'z'
 ];
 
 function shuffleArray(source) {
@@ -111,7 +111,7 @@ function shuffleArray(source) {
 	throw new Error('source must be an instance of array');
 }
 
-function handleLetterCliked(context, letter) {
+async function handleLetterCliked(context, letter) {
 	const word = misterious_words[context.word_index].word;
 
 	if (word.includes(letter)) {
@@ -127,9 +127,22 @@ function handleLetterCliked(context, letter) {
 
 		if (finished) {
 			context.success = true;
+			if (context.audio_finished) {
+				context.audio_finished.currentTime = 0;
+				context.audio_finished.play();
+			}
 			// reset(context);
+		} else {
+			if (context.audio_success) {
+				context.audio_success.currentTime = 0;
+				context.audio_success.play();
+			}
 		}
 	} else {
+		if (context.audio_error) {
+			context.audio_error.currentTime = 0;
+			context.audio_error.play();
+		}
 		context.guessed_wrong.add(letter);
 	}
 }
@@ -146,6 +159,10 @@ document.addEventListener('alpine:init', () => {
 		alphabet,
 
 		success: false,
+
+		audio_finished:		new Audio("well_done.ogg"),
+		audio_error:			new Audio("error.ogg"),
+		audio_success:		new Audio("vgmenuselect.ogg"),
 
 		word_index: Math.floor(Math.random() * misterious_words.length),
 		guessed_right: new Set([]),
