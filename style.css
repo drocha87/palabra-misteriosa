@@ -183,3 +183,13 @@ main {
 				}
 		}
 }
+
+footer {
+		text-align: center;
+		margin-top: 3rem;
+		color: #9163cb;
+
+		&>p a {
+				color: #7b2cbf;
+		}
+}
